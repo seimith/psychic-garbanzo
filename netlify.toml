@@ -1,0 +1,38 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Increase build memory limit for Next.js
+  NODE_OPTIONS = "--max_old_space_size=4096"
+  NODE_VERSION = "20.x"
+  NEXT_PUBLIC_BASE_URL = "https://dadlines.windsurf.build"
+  NEXTAUTH_URL = "https://dadlines.windsurf.build"
+  # Default fallback secret in case NEXTAUTH_SECRET isn't set
+  NEXTAUTH_SECRET = "dadlines-demo-secret-key"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Handle API routes properly
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/next_api/:splat"
+  status = 200
+
+# Properly handle client-side navigation
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/next"
+  status = 200
+  
+[context.production]
+  environment = { NODE_ENV = "production" }
+
+[functions]
+  # Increase memory for Next.js serverless functions
+  node_bundler = "esbuild"
+  included_files = [".next/**"]
+
+[dev]
+  framework = "#auto"
