@@ -1,6 +1,7 @@
 [build]
-  command = "npm ci && npm run build"
+  command = "npm ci && npm run build:netlify"
   publish = ".next"
+  ignore = "git diff --quiet HEAD^ HEAD ."
 
 [build.environment]
   # Increase build memory limit for Next.js
@@ -30,9 +31,12 @@
   environment = { NODE_ENV = "production" }
 
 [functions]
-  # Increase memory for Next.js serverless functions
+  # Configure functions to stay within size limits
   node_bundler = "esbuild"
-  included_files = [".next/**"]
+  included_files = [".next/server/**", ".next/static/**"]
+  external_node_modules = ["next"]
+  # Exclude unnecessary files
+  excluded_files = [".next/cache/**", ".next/static/development/**", "node_modules/**/*.{md,txt,ts,map}"]
 
 [dev]
   framework = "#auto"

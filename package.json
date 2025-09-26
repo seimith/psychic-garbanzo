@@ -5,11 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:netlify": "next build",
+    "build:netlify": "next build && node scripts/netlify-optimize.js",
     "start": "next start",
     "lint": "eslint",
     "test-build": "node scripts/test-build.js",
-    "predeploy": "npm run test-build"
+    "predeploy": "npm run test-build",
+    "optimize": "node scripts/netlify-optimize.js"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.32.2",
