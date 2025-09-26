@@ -1,51 +1,14 @@
-import { CheckIcon } from '@heroicons/react/24/outline';
+'use client';
+
+import { PricingComponent } from '@runonatlas/next/client';
 import Layout from '@/components/layout/Layout';
 
-const tiers = [
-  {
-    name: 'Free',
-    price: 0,
-    description: 'Perfect for casual readers who enjoy a good dad joke now and then.',
-    features: [
-      '5 dad jokes per day',
-      'Basic news categories',
-      'Email support',
-      'Community access',
-    ],
-    cta: 'Get started',
-    featured: false,
-  },
-  {
-    name: 'Pro',
-    price: 9,
-    description: 'For those who want more dad jokes and news in their daily life.',
-    features: [
-      'Unlimited dad jokes',
-      'All news categories',
-      'Priority email support',
-      'Exclusive content',
-      'Ad-free experience',
-    ],
-    cta: 'Get started',
-    featured: true,
-  },
-  {
-    name: 'Enterprise',
-    price: 29,
-    description: 'For organizations that want to spread dad joke joy company-wide.',
-    features: [
-      'Everything in Pro',
-      'Team management',
-      'Dedicated account manager',
-      'API access',
-      'Custom integrations',
-    ],
-    cta: 'Contact sales',
-    featured: false,
-  },
-];
-
 export default function Pricing() {
+  // Create the absolute URL for the success redirect
+  const successUrl = process.env.NEXT_PUBLIC_BASE_URL 
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}/subscription/customer-portal` 
+    : 'https://dadlines.netlify.app/subscription/customer-portal';
+
   return (
     <Layout title="Pricing - Dadlines" description="Choose the perfect plan for your dad joke news needs">
       <div className="bg-white">
@@ -59,45 +22,13 @@ export default function Pricing() {
             </p>
           </div>
 
-          <div className="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0">
-            {tiers.map((tier) => (
-              <div
-                key={tier.name}
-                className={`border rounded-lg shadow-sm divide-y ${
-                  tier.featured ? 'border-blue-500' : 'border-gray-200'
-                }`}
-              >
-                <div className="p-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">{tier.name}</h3>
-                  <p className="mt-4 text-sm text-gray-500">{tier.description}</p>
-                  <p className="mt-8">
-                    <span className="text-4xl font-extrabold text-gray-900">${tier.price}</span>{' '}
-                    <span className="text-base font-medium text-gray-500">/mo</span>
-                  </p>
-                  <a
-                    href={tier.featured ? '/register' : '/contact'}
-                    className={`mt-8 block w-full py-3 px-6 border border-transparent rounded-md text-center font-medium ${
-                      tier.featured
-                        ? 'bg-blue-600 text-white hover:bg-blue-700'
-                        : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-                    }`}
-                  >
-                    {tier.cta}
-                  </a>
-                </div>
-                <div className="px-6 pt-6 pb-8">
-                  <h4 className="text-xs font-medium text-gray-900 tracking-wide uppercase">What's included</h4>
-                  <ul className="mt-6 space-y-4">
-                    {tier.features.map((feature) => (
-                      <li key={feature} className="flex">
-                        <CheckIcon className="flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true" />
-                        <span className="ml-3 text-base text-gray-500">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
+          <div className="mt-12">
+            {/* Atlas Pricing Component */}
+            <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-100">
+              <PricingComponent 
+                successUrl={successUrl} 
+              />
+            </div>
           </div>
         </div>
       </div>
