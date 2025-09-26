@@ -22,11 +22,6 @@ export default function Header() {
               <span className="text-xl font-bold text-blue-600">Dadlines</span>
             </Link>
             <div className="ml-10 hidden space-x-8 lg:block">
-              {isSignedIn && (
-                <Link href="/subscription/customer-portal" className="text-base font-medium text-gray-500 hover:text-gray-900">
-                  Subscription
-                </Link>
-              )}
               <Link href="/pricing" className={`${isSignedIn ? 'ml-8' : ''} text-base font-medium text-gray-500 hover:text-gray-900`}>
                 Pricing
               </Link>
@@ -60,9 +55,9 @@ export default function Header() {
                 <Link href="/dashboard" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
                   Dashboard
                 </Link>
-                <Link href="/profile" className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                {/* <Link href="/profile" className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                   Profile
-                </Link>
+                </Link> */}
                 <Link href="/subscription/customer-portal" className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                   Subscription
                 </Link>
