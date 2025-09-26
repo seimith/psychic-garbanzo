@@ -1,5 +1,5 @@
 [build]
-  command = "npm install tailwindcss postcss autoprefixer && npm run build:netlify"
+  command = "npm install && NODE_ENV=production npm run build:netlify"
   publish = ".next"
 
 [build.environment]
