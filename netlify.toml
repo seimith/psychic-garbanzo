@@ -1,42 +1,31 @@
 [build]
   command = "npm ci && npm run build:netlify"
   publish = ".next"
-  ignore = "git diff --quiet HEAD^ HEAD ."
 
 [build.environment]
-  # Increase build memory limit for Next.js
   NODE_OPTIONS = "--max_old_space_size=4096"
   NODE_VERSION = "18.18.0"
   NEXT_PUBLIC_BASE_URL = "https://dadlines.netlify.app"
   NEXTAUTH_URL = "https://dadlines.netlify.app"
-  # Default fallback secret in case NEXTAUTH_SECRET isn't set
   NEXTAUTH_SECRET = "dadlines-demo-secret-key"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Handle API routes properly
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/next_api/:splat"
   status = 200
 
-# Properly handle client-side navigation
 [[redirects]]
   from = "/*"
   to = "/.netlify/functions/next"
   status = 200
-  
-[context.production]
-  environment = { NODE_ENV = "production" }
+
+[context.production.environment]
+  NODE_ENV = "production"
 
 [functions]
-  # Configure functions to stay within size limits
   node_bundler = "esbuild"
   included_files = [".next/server/**", ".next/static/**"]
-  external_node_modules = ["next"]
-  # Exclude unnecessary files
-  excluded_files = [".next/cache/**", ".next/static/development/**", "node_modules/**/*.{md,txt,ts,map}"]
 
-[dev]
-  framework = "#auto"
