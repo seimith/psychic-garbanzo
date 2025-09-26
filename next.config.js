@@ -23,7 +23,21 @@ const nextConfig = {
     NEXTAUTH_SECRET: process.env.NODE_ENV === 'development'
       ? 'dev-secret-key'
       : 'dadlines-demo-secret-key'
-  }
+  },
+
+  // Fix for fs module not found error in browser environment
+  transpilePackages: ['tailwindcss'],
+
+  // Properly handle Node.js modules in browser
+  webpack: (config) => {
+    // This is to handle the 'fs' module used by Tailwind's dependencies
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      module: false,
+    };
+    return config;
+  },
 };
 
 module.exports = nextConfig;
