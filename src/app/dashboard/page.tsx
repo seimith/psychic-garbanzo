@@ -4,7 +4,9 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Layout from '@/components/layout/Layout';
-import { NewspaperIcon, ClockIcon, StarIcon } from '@heroicons/react/24/outline';
+import FeatureProtection from '@/components/atlas/FeatureProtection';
+import { ChartBarIcon, NewspaperIcon, ClockIcon, StarIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 
 interface NewsItem {
   id: string;
@@ -140,6 +142,30 @@ export default function DashboardPage() {
           </div>
         )}
 
+        {/* Premium Feature - Advanced Analytics */}
+        <div className="mt-12 mb-8">
+          <h2 className="text-lg font-medium text-gray-900 mb-4">Premium Features</h2>
+          
+          <FeatureProtection features={["advanced-analytics"]}>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200 shadow-md">
+              <div className="flex items-center mb-4">
+                <SparklesIcon className="h-6 w-6 text-blue-600 mr-2" />
+                <h3 className="text-lg font-semibold text-blue-800">Advanced Analytics</h3>
+              </div>
+              
+              <p className="text-gray-700 mb-6">Gain deeper insights into your reading habits with our advanced analytics dashboard.</p>
+              
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <h4 className="font-medium text-gray-900 mb-3">Reading Time by Category</h4>
+                <div className="h-40 bg-gray-100 rounded flex items-center justify-center">
+                  <ChartBarIcon className="h-20 w-20 text-blue-300" />
+                  <span className="ml-3 text-gray-500">Interactive charts available in premium version</span>
+                </div>
+              </div>
+            </div>
+          </FeatureProtection>
+        </div>
+        
         <div className="mt-12 bg-gray-50 p-6 rounded-lg">
           <h2 className="text-lg font-medium text-gray-900 mb-4">Your Reading Stats</h2>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
@@ -204,6 +230,22 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        
+        {/* Subscription Call to Action */}
+        <div className="mt-10 bg-blue-50 border border-blue-100 p-6 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-medium text-blue-900">Upgrade to Premium</h3>
+              <p className="mt-2 text-blue-700">Get access to advanced analytics, personalized news feeds, and more.</p>
+            </div>
+            <Link
+              href="/subscription/pricing"
+              className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              View Plans
+            </Link>
           </div>
         </div>
       </div>

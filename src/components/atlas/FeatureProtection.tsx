@@ -18,18 +18,18 @@ export default function FeatureProtection({ children, features }: FeatureProtect
           
           <div className="mt-3 space-y-2">
             {reasons.map((reason) => (
-              <div key={reason.slug} className="text-gray-700">
+              <div key={reason.id} className="text-gray-700">
                 {reason.reason === 'notIncluded' && (
                   <p>
                     This feature requires a subscription. Upgrade your plan to access{' '}
-                    <span className="font-semibold">{reason.slug}</span>.
+                    <span className="font-semibold">{reason.id}</span>.
                   </p>
                 )}
                 
                 {reason.reason === 'limitReached' && (
                   <p>
                     You've reached the limit for{' '}
-                    <span className="font-semibold">{reason.slug}</span>.{' '}
+                    <span className="font-semibold">{reason.id}</span>.{' '}
                     Current usage: {reason.currentUsage}/{reason.limit}.
                   </p>
                 )}

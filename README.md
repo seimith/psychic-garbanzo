@@ -19,6 +19,7 @@ Visit [https://dadlines.netlify.app](https://dadlines.netlify.app) to see the ap
 
 - **Frontend**: Next.js 15.x with TypeScript and Tailwind CSS
 - **Authentication**: NextAuth.js for secure user authentication
+- **Subscription Management**: Atlas for pricing, billing, and feature access control
 - **Styling**: Tailwind CSS for responsive design
 - **Deployment**: Netlify for hosting and continuous deployment
 
@@ -46,7 +47,10 @@ Visit [https://dadlines.netlify.app](https://dadlines.netlify.app) to see the ap
    ```
    NEXTAUTH_URL=http://localhost:3001
    NEXTAUTH_SECRET=your-secret-key
+   ATLAS_API_KEY=your-atlas-api-key
    ```
+   
+   You can obtain an Atlas API key by signing up at [RunOnAtlas](https://app.runonatlas.com/).
 
 4. Run the development server:
    ```bash
@@ -62,13 +66,23 @@ Visit [https://dadlines.netlify.app](https://dadlines.netlify.app) to see the ap
 ├── src/
 │   ├── app/            # Next.js pages and API routes
 │   │   ├── api/        # API endpoints including NextAuth configuration
+│   │   │   ├── auth/   # NextAuth authentication endpoints
+│   │   │   ├── atlas-api/ # Atlas API routes
+│   │   │   └── premium-news/ # Protected API with Atlas feature checks
 │   │   ├── about/      # About page
-│   │   ├── dashboard/  # User dashboard
+│   │   ├── dashboard/  # User dashboard with premium features
 │   │   ├── login/      # Login page
-│   │   ├── pricing/    # Pricing plans page
+│   │   ├── pricing/    # Basic pricing plans page
 │   │   ├── profile/    # User profile page
-│   │   └── register/   # Registration page
+│   │   ├── register/   # Registration page
+│   │   └── subscription/ # Atlas subscription pages
+│   │       ├── pricing/ # Atlas pricing component
+│   │       └── customer-portal/ # Atlas customer portal
+│   ├── atlas/          # Atlas configuration
+│   │   ├── client.tsx  # Atlas client provider
+│   │   └── server.ts   # Atlas server client
 │   ├── components/     # Reusable React components
+│   │   ├── atlas/      # Atlas-related components
 │   │   ├── layout/     # Layout components (Header, Layout)
 │   │   ├── ui/         # UI components
 │   │   └── auth/       # Authentication-related components
@@ -103,6 +117,38 @@ npm run build
 npm install -g netlify-cli
 npm netlify deploy --prod
 ```
+
+## 💰 Subscription System
+
+Dadlines uses Atlas to manage subscriptions and protect premium features:
+
+### Client-side Feature Protection
+
+Protect premium UI features using the `FeatureProtection` component:
+
+```tsx
+<FeatureProtection features={["advanced-analytics"]}>
+  <PremiumFeatureComponent />
+</FeatureProtection>
+```
+
+### Server-side Feature Protection
+
+Protect API endpoints and backend resources:
+
+```typescript
+const { ok } = await atlasServerClient.areFeaturesAllowed(userId, ["premium-content"]);
+if (!ok) {
+  return NextResponse.json({ error: "Premium subscription required" }, { status: 403 });
+}
+```
+
+### Subscription Management
+
+Users can manage their subscriptions through:
+
+- `/subscription/pricing` - View and purchase subscription plans
+- `/subscription/customer-portal` - Manage existing subscriptions
 
 ## 🔮 Future Enhancements
 
