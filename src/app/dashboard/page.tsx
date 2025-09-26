@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Layout from '@/components/layout/Layout';
@@ -19,21 +19,22 @@ interface NewsItem {
 }
 
 export default function DashboardPage() {
-  const { data: session, status } = useSession();
+  const { isSignedIn, isLoaded } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
   const [news, setNews] = useState<NewsItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Redirect to login if not authenticated
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
+    if (isLoaded && !isSignedIn) {
+      router.push('/sign-in');
     }
-  }, [status, router]);
+  }, [isLoaded, isSignedIn, router]);
 
   // Fetch news data (mock data for now)
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (isSignedIn && isLoaded) {
       // In a real app, this would be an API call
       const mockNews: NewsItem[] = [
         {
@@ -68,7 +69,7 @@ export default function DashboardPage() {
       setNews(mockNews);
       setIsLoading(false);
     }
-  }, [status]);
+  }, [isSignedIn, isLoaded]);
 
   const toggleFavorite = (id: string) => {
     setNews(
@@ -78,7 +79,7 @@ export default function DashboardPage() {
     );
   };
 
-  if (status !== 'authenticated') {
+  if (!isSignedIn || !isLoaded) {
     return (
       <Layout title="Loading...">
         <div className="flex justify-center items-center min-h-screen">
@@ -92,7 +93,7 @@ export default function DashboardPage() {
     <Layout title="Your Dashboard - Dadlines">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome back, {session.user?.name || 'News Enthusiast'}!</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Welcome back, {user?.fullName || 'News Enthusiast'}!</h1>
           <p className="mt-2 text-lg text-gray-600">Here's your personalized news feed with a side of dad jokes.</p>
         </div>
 

@@ -2,15 +2,15 @@
 
 import { CustomerPortalComponent } from '@runonatlas/next/client';
 import Layout from '@/components/layout/Layout';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 
 export default function AtlasCustomerPortalPage() {
-  const { data: session, status } = useSession();
+  const { isSignedIn, isLoaded } = useAuth();
   
   // Redirect to login if not authenticated
-  if (status === 'unauthenticated') {
-    redirect('/login');
+  if (isLoaded && !isSignedIn) {
+    redirect('/sign-in');
   }
 
   // Create the absolute URL for the success redirect
@@ -19,7 +19,7 @@ export default function AtlasCustomerPortalPage() {
     : 'https://dadlines.netlify.app/subscription/customer-portal';
 
   // Show loading state while checking authentication
-  if (status === 'loading') {
+  if (!isLoaded) {
     return (
       <Layout title="Customer Portal - Dadlines">
         <div className="flex justify-center items-center min-h-[60vh]">

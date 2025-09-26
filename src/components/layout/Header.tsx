@@ -22,10 +22,12 @@ export default function Header() {
               <span className="text-xl font-bold text-blue-600">Dadlines</span>
             </Link>
             <div className="ml-10 hidden space-x-8 lg:block">
-              <Link href="/subscription/pricing" className="text-base font-medium text-gray-500 hover:text-gray-900">
-                Subscription
-              </Link>
-              <Link href="/pricing" className="ml-8 text-base font-medium text-gray-500 hover:text-gray-900">
+              {isSignedIn && (
+                <Link href="/subscription/customer-portal" className="text-base font-medium text-gray-500 hover:text-gray-900">
+                  Subscription
+                </Link>
+              )}
+              <Link href="/pricing" className={`${isSignedIn ? 'ml-8' : ''} text-base font-medium text-gray-500 hover:text-gray-900`}>
                 Pricing
               </Link>
               <Link href="/about" className="ml-8 text-base font-medium text-gray-500 hover:text-gray-900">
@@ -86,13 +88,15 @@ export default function Header() {
       {isMenuOpen && (
         <div className="lg:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link 
-              href="/subscription/pricing"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-              onClick={toggleMenu}
-            >
-              Subscription
-            </Link>
+            {isSignedIn && (
+              <Link 
+                href="/subscription/customer-portal"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                onClick={toggleMenu}
+              >
+                Subscription
+              </Link>
+            )}
             <Link 
               href="/pricing"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
