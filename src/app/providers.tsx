@@ -4,15 +4,10 @@ import { SessionProvider } from 'next-auth/react';
 import { ReactNode } from 'react';
 
 export function Providers({ children }: { children: ReactNode }) {
-  // Handle both development and production environments
-  const baseUrl = process.env.NEXTAUTH_URL || 
-    (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3001');
-  
+  // Next.js 15+ with App Router handles the basePath automatically
+  // We should not specify the full URL as basePath, only the path portion
   return (
-    <SessionProvider 
-      session={undefined} 
-      basePath={`${baseUrl}/api/auth`}
-    >
+    <SessionProvider>
       {children}
     </SessionProvider>
   );
