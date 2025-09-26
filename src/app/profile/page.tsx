@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Layout from '@/components/layout/Layout';
 import { UserIcon, CogIcon, BellIcon } from '@heroicons/react/24/outline';
@@ -18,7 +18,8 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
+  const { isSignedIn, isLoaded } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('profile');
   const [profile, setProfile] = useState<UserProfile>({
@@ -37,19 +38,19 @@ export default function ProfilePage() {
 
   // Redirect to login if not authenticated
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
+    if (isLoaded && !isSignedIn) {
+      router.push('/sign-in');
     }
-  }, [status, router]);
+  }, [isLoaded, isSignedIn, router]);
 
   // Load user profile data
   useEffect(() => {
-    if (status === 'authenticated' && session.user) {
+    if (isSignedIn && isLoaded && user) {
       // In a real app, you would fetch this from an API
       setProfile({
-        name: session.user.name || 'User',
-        email: session.user.email || 'user@example.com',
-        avatar: session.user.image || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(session.user.name || 'User'),
+        name: user.fullName || 'User',
+        email: user.emailAddresses[0]?.emailAddress || 'user@example.com',
+        avatar: user.imageUrl || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.fullName || 'User'),
         preferences: {
           emailNotifications: true,
           darkMode: false,
@@ -58,7 +59,7 @@ export default function ProfilePage() {
       });
       setIsLoading(false);
     }
-  }, [status, session]);
+  }, [isSignedIn, isLoaded, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,7 +98,7 @@ export default function ProfilePage() {
     }
   };
 
-  if (status !== 'authenticated') {
+  if (!isSignedIn || !isLoaded) {
     return (
       <Layout title="Loading...">
         <div className="flex justify-center items-center min-h-screen">
