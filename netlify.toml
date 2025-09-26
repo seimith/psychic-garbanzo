@@ -6,8 +6,8 @@
   # Increase build memory limit for Next.js
   NODE_OPTIONS = "--max_old_space_size=4096"
   NODE_VERSION = "20.x"
-  NEXT_PUBLIC_BASE_URL = "https://dadlines.windsurf.build"
-  NEXTAUTH_URL = "https://dadlines.windsurf.build"
+  NEXT_PUBLIC_BASE_URL = "https://dadlines.netlify.app"
+  NEXTAUTH_URL = "https://dadlines.netlify.app"
   # Default fallback secret in case NEXTAUTH_SECRET isn't set
   NEXTAUTH_SECRET = "dadlines-demo-secret-key"
 

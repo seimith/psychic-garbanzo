@@ -19,7 +19,7 @@ const nextConfig = {
   env: {
     NEXTAUTH_URL: process.env.NODE_ENV === 'development' 
       ? 'http://localhost:3001' 
-      : 'https://unique-pixie-6ab968.netlify.app',
+      : 'https://dadlines.netlify.app',
     NEXTAUTH_SECRET: process.env.NODE_ENV === 'development'
       ? 'dev-secret-key'
       : 'dadlines-demo-secret-key'
