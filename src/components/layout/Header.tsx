@@ -1,12 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { useState } from 'react';
+import UserButton from '@/components/auth/UserButton';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function Header() {
-  const { data: session } = useSession();
+  const { isSignedIn, isLoaded } = useAuth();
+  const { user } = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -51,7 +53,7 @@ export default function Header() {
 
           {/* Desktop navigation */}
           <div className="hidden lg:ml-10 lg:flex lg:space-x-4">
-            {session ? (
+            {isSignedIn ? (
               <>
                 <Link href="/dashboard" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
                   Dashboard
@@ -62,19 +64,16 @@ export default function Header() {
                 <Link href="/subscription/customer-portal" className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                   Subscription
                 </Link>
-                <button
-                  onClick={() => signOut()}
-                  className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  Sign out
-                </button>
+                <div className="inline-flex items-center rounded-md border border-gray-300 bg-white px-2 py-1">
+                  <UserButton />
+                </div>
               </>
             ) : (
               <>
-                <Link href="/login" className="inline-flex items-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50">
+                <Link href="/sign-in" className="inline-flex items-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50">
                   Sign in
                 </Link>
-                <Link href="/register" className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+                <Link href="/sign-up" className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
                   Sign up
                 </Link>
               </>
@@ -109,7 +108,7 @@ export default function Header() {
               About
             </Link>
 
-            {session ? (
+            {isSignedIn ? (
               <>
                 <Link 
                   href="/dashboard"
@@ -132,27 +131,21 @@ export default function Header() {
                 >
                   Subscription
                 </Link>
-                <button
-                  onClick={() => {
-                    toggleMenu();
-                    signOut();
-                  }}
-                  className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                >
-                  Sign out
-                </button>
+                <div className="flex items-center px-3 py-2">
+                  <UserButton />
+                </div>
               </>
             ) : (
               <>
                 <Link 
-                  href="/login"
+                  href="/sign-in"
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                   onClick={toggleMenu}
                 >
                   Sign in
                 </Link>
                 <Link 
-                  href="/register"
+                  href="/sign-up"
                   className="block px-3 py-2 rounded-md text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
                   onClick={toggleMenu}
                 >

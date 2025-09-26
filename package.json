@@ -12,6 +12,7 @@
     "predeploy": "npm run test-build"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.32.2",
     "@heroicons/react": "^2.2.0",
     "@runonatlas/next": "^2.1.1",
     "@types/node": "^20.19.17",

@@ -1,12 +1,12 @@
 'use client';
 
-import { useSession, signIn } from 'next-auth/react';
+import { useAuth, useUser, useClerk } from '@clerk/nextjs';
 import { AtlasProvider } from '@runonatlas/next/client';
 import { redirect } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 const loginCallback = () => {
-  signIn();
+  window.location.href = '/sign-in';
 };
 
 export function AtlasClientProvider({
@@ -14,22 +14,23 @@ export function AtlasClientProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session, status } = useSession();
+  const { isSignedIn, isLoaded } = useAuth();
+  const { user } = useUser();
+  const clerk = useClerk();
   const [atlasError, setAtlasError] = useState<Error | null>(null);
   
-  // We'll use the session to get the user information
-  // NextAuth doesn't include id in the default session type
-  const userId = session?.user?.email || ''; // Using email as a unique identifier
-  const userEmail = session?.user?.email || '';
-  const userName = session?.user?.name || '';
-  const isUserLoading = status === 'loading';
+  // We'll use Clerk to get the user information
+  const userId = user?.id || '';
+  const userEmail = user?.emailAddresses[0]?.emailAddress || '';
+  const userName = user?.fullName || '';
+  const isUserLoading = !isLoaded;
   
-  // Reset Atlas error when session status changes
+  // Reset Atlas error when auth status changes
   useEffect(() => {
-    if (atlasError && status !== 'loading') {
+    if (atlasError && isLoaded) {
       setAtlasError(null);
     }
-  }, [status, atlasError]);
+  }, [isLoaded, atlasError]);
 
   // Handle Atlas errors gracefully
   if (atlasError) {
@@ -56,6 +57,10 @@ export function AtlasClientProvider({
       userEmail={userEmail}
       userName={userName}
       isUserLoading={isUserLoading}
+      getAuth={clerk.session ? async () => {
+        const token = await clerk.session?.getToken();
+        return token || null;
+      } : undefined}
     >
       {children}
     </AtlasProvider>

@@ -1,13 +1,12 @@
 import { AtlasNextServerClient } from '@runonatlas/next/server';
-import { getServerSession } from 'next-auth';
+import { auth } from '@clerk/nextjs/server';
 
 // Initialize the Atlas server client with a callback to get the current user ID
 export const atlasServerClient = new AtlasNextServerClient(
   async () => {
-    const session = await getServerSession();
-    // Using email as unique identifier since NextAuth doesn't expose ID by default
-    // Return null if email is undefined to satisfy TypeScript
-    return session?.user?.email || null;
+    const { userId } = await auth();
+    // Return the Clerk user ID or null
+    return userId || null;
   },
   {
     // Configure event handling for serverless environment
