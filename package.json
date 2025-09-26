@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:netlify": "npm i -g postcss tailwindcss autoprefixer && npm ci && next build",
+    "build:netlify": "next build",
     "start": "next start",
     "lint": "eslint",
     "test-build": "node scripts/test-build.js",
