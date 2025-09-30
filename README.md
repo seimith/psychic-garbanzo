@@ -127,7 +127,7 @@ Dadlines uses Atlas to manage subscriptions and protect premium features:
 Protect premium UI features using the `FeatureProtection` component:
 
 ```tsx
-<FeatureProtection features={["advanced-analytics"]}>
+<FeatureProtection features={["name-of-feature-id-slug"]}>
   <PremiumFeatureComponent />
 </FeatureProtection>
 ```

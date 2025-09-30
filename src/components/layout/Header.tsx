@@ -55,6 +55,9 @@ export default function Header() {
                 <Link href="/dashboard" className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
                   Dashboard
                 </Link>
+                <Link href="/features" className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                  Features
+                </Link>
                 {/* <Link href="/profile" className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                   Profile
                 </Link> */}
@@ -115,6 +118,13 @@ export default function Header() {
                   onClick={toggleMenu}
                 >
                   Dashboard
+                </Link>
+                <Link 
+                  href="/features"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                  onClick={toggleMenu}
+                >
+                  Features
                 </Link>
                 <Link 
                   href="/profile"

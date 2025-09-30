@@ -147,7 +147,7 @@ export default function DashboardPage() {
         <div className="mt-12 mb-8">
           <h2 className="text-lg font-medium text-gray-900 mb-4">Premium Features</h2>
           
-          <FeatureProtection features={["advanced-analytics"]}>
+          <FeatureProtection features={["Daily-Dad-Joke-Emails"]}>
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200 shadow-md">
               <div className="flex items-center mb-4">
                 <SparklesIcon className="h-6 w-6 text-blue-600 mr-2" />
