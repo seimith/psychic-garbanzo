@@ -5,14 +5,15 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import FeatureProtection from '@/components/atlas/FeatureProtection';
-import { useCustomerFeatures } from '@runonatlas/next/client';
+import { useCustomerFeatures, usePricingModel } from '@runonatlas/next/client';
 import { 
   EnvelopeIcon, 
   SparklesIcon, 
   NewspaperIcon, 
   EyeSlashIcon,
   LockClosedIcon,
-  FireIcon
+  FireIcon,
+  SpeakerWaveIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
@@ -21,10 +22,15 @@ export default function FeaturesPage() {
   const { user } = useUser();
   const router = useRouter();
   const { features } = useCustomerFeatures();
+  const { pricingModel } = usePricingModel();
   
   // Features is an array, so we need to find the feature by id/slug
   const fartFuryFeature = Array.isArray(features) 
     ? features.find((f: any) => f.id === 'fart-fury' || f.slug === 'fart-fury')
+    : undefined;
+  
+  const burpBlasterFeature = Array.isArray(features)
+    ? features.find((f: any) => f.id === 'burp-blaster' || f.slug === 'burp-blaster')
     : undefined;
 
   const triggerFart = async () => {
@@ -70,14 +76,80 @@ export default function FeaturesPage() {
     }
   };
 
+  const triggerBurp = async () => {
+    console.log('Burp button clicked!');
+    try {
+      if (!user?.id) {
+        console.error('No user ID found');
+        alert('User not authenticated');
+        return;
+      }
+
+      console.log('Sending burp request for user:', user.id);
+      const response = await fetch('/api/burp', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: user.id }),
+      });
+      
+      console.log('Burp response status:', response.status);
+      const text = await response.text();
+      console.log('Burp response text:', text);
+      
+      if (!text) {
+        alert('Empty response from server. Check server logs.');
+        return;
+      }
+      
+      const data = JSON.parse(text);
+      
+      if (response.ok) {
+        alert(data.message);
+        setTimeout(() => {
+          window.location.href = window.location.href.split('?')[0] + '?t=' + Date.now();
+        }, 500);
+      } else {
+        alert(data.error || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('Error triggering burp:', error);
+      alert('Failed to trigger burp blaster: ' + (error instanceof Error ? error.message : String(error)));
+    }
+  };
+
   // Debug: Log features data
   useEffect(() => {
     console.log('All features:', features);
+    console.log('Pricing Model (full):', pricingModel);
+    console.log('Pricing Model type:', typeof pricingModel);
+    console.log('Pricing Model keys:', pricingModel ? Object.keys(pricingModel) : 'null');
     console.log('Fart Fury feature:', fartFuryFeature);
+    console.log('Burp Blaster feature:', burpBlasterFeature);
     if (fartFuryFeature && typeof fartFuryFeature === 'object') {
       console.log('Fart Fury full object:', JSON.stringify(fartFuryFeature, null, 2));
     }
-  }, [features, fartFuryFeature]);
+    if (burpBlasterFeature && typeof burpBlasterFeature === 'object') {
+      console.log('Burp Blaster full object:', JSON.stringify(burpBlasterFeature, null, 2));
+    }
+    
+    // Try to find burp-blaster in pricing model
+    if (pricingModel) {
+      console.log('Pricing Model stringified:', JSON.stringify(pricingModel, null, 2));
+      
+      // Check different possible structures
+      if ((pricingModel as any).features) {
+        const burpPricing = (pricingModel as any).features.find((f: any) => f.id === 'burp-blaster');
+        console.log('Burp Blaster pricing from model.features:', burpPricing);
+      }
+      if ((pricingModel as any).plans) {
+        console.log('Plans in pricing model:', (pricingModel as any).plans);
+      }
+    } else {
+      console.log('Pricing Model is null/undefined');
+    }
+  }, [features, fartFuryFeature, burpBlasterFeature, pricingModel]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -190,6 +262,44 @@ export default function FeaturesPage() {
                       className="mt-2 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                     >
                       💨 Trigger Fart
+                    </button>
+                  </div>
+                </div>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  ✓ Active
+                </span>
+              </div>
+            </div>
+          </FeatureProtection>
+
+          {/* Feature 6: Burp Blaster - Usage Based */}
+          <FeatureProtection features={["burp-blaster"]}>
+            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-lg border border-indigo-200 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <SpeakerWaveIcon className="h-6 w-6 text-indigo-600 mr-3" />
+                  <div>
+                    <h2 className="text-lg font-semibold text-indigo-900">Burp Blaster</h2>
+                    {burpBlasterFeature && typeof burpBlasterFeature === 'object' && 'currentUsage' in burpBlasterFeature ? (
+                      <div className="text-sm text-gray-600">
+                        <p className="font-medium">
+                          {burpBlasterFeature.currentUsage || 0} burps used this month
+                        </p>
+                        {(burpBlasterFeature as any).price && (
+                          <p className="text-xs mt-1">
+                            ${((burpBlasterFeature.currentUsage || 0) * (burpBlasterFeature as any).price).toFixed(2)} total cost
+                            <span className="text-gray-500"> (${ (burpBlasterFeature as any).price}/burp)</span>
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-600">Usage-based billing</p>
+                    )}
+                    <button
+                      onClick={triggerBurp}
+                      className="mt-2 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      🎤 Trigger Burp
                     </button>
                   </div>
                 </div>
