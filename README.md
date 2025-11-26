@@ -48,9 +48,15 @@ Visit [https://dadlines.netlify.app](https://dadlines.netlify.app) to see the ap
    NEXTAUTH_URL=http://localhost:3001
    NEXTAUTH_SECRET=your-secret-key
    ATLAS_API_KEY=your-atlas-api-key
+   
+   # For local Atlas development (optional)
+   ATLAS_BASE_URL=http://localhost:8080
+   NEXT_PUBLIC_ATLAS_BASE_URL=http://localhost:8080
    ```
    
-   You can obtain an Atlas API key by signing up at [RunOnAtlas](https://app.runonatlas.com/).
+   **Production:** Obtain an Atlas API key by signing up at [RunOnAtlas](https://app.runonatlas.com/).
+   
+   **Local Development:** If you're running a local Atlas instance, set the `ATLAS_BASE_URL` environment variables to point to your local API (typically `http://localhost:8080`).
 
 4. Run the development server:
    ```bash
@@ -80,7 +86,8 @@ Visit [https://dadlines.netlify.app](https://dadlines.netlify.app) to see the ap
 │   │       └── customer-portal/ # Atlas customer portal
 │   ├── atlas/          # Atlas configuration
 │   │   ├── client.tsx  # Atlas client provider
-│   │   └── server.ts   # Atlas server client
+│   │   ├── server.ts   # Atlas server client
+│   │   └── proxy-setup.ts # Fetch proxy for local Atlas development
 │   ├── components/     # Reusable React components
 │   │   ├── atlas/      # Atlas-related components
 │   │   ├── layout/     # Layout components (Header, Layout)
@@ -99,6 +106,26 @@ Run the development server:
 ```bash
 npm run dev
 ```
+
+### Local Atlas Development
+
+This project supports connecting to a local Atlas instance for development and testing:
+
+1. **Setup**: The project uses internal Atlas SDK packages (`@runonatlas/next@internal` and `@runonatlas/react@internal`) that support local development.
+
+2. **Fetch Proxy**: The `src/atlas/proxy-setup.ts` file intercepts all Atlas API calls and redirects them from the production URL (`https://platform.runonatlas.com`) to your local instance.
+
+3. **Configuration**: Set the following environment variables in `.env.local`:
+   ```bash
+   ATLAS_BASE_URL=http://localhost:8080
+   NEXT_PUBLIC_ATLAS_BASE_URL=http://localhost:8080
+   ```
+
+4. **Port Configuration**: 
+   - Port `8000`: Atlas frontend UI
+   - Port `8080`: Atlas backend API (this is what the SDK connects to)
+
+5. **How it works**: When the app starts, the fetch proxy automatically redirects all Atlas API requests to your local instance, allowing you to test subscription features, pricing models, and feature gates locally.
 
 ### Building for Production
 
