@@ -61,6 +61,7 @@ export function AtlasClientProvider({
         const token = await clerk.session?.getToken();
         return token || null;
       } : undefined}
+      {...({ _atlasHost: process.env.NEXT_PUBLIC_ATLAS_BASE_URL || 'http://localhost:8080' } as any)}
     >
       {children}
     </AtlasProvider>

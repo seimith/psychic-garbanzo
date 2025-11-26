@@ -1,5 +1,8 @@
 import { AtlasNextServerClient } from '@runonatlas/next/server';
 
+// Set up fetch proxy for local Atlas development
+import './proxy-setup';
+
 // Temporary in-memory storage for fart usage (resets on server restart)
 // TODO: Replace with actual database
 const fartUsageStore: Record<string, number> = {};
@@ -29,6 +32,8 @@ export const atlasServerClient = new AtlasNextServerClient(
     return userId;
   },
   {
+    // Point to local Atlas instance (using internal API)
+    _atlasHost: process.env.ATLAS_BASE_URL || 'http://localhost:8080',
     // Configure event handling for serverless environment
     eventsFlushAt: 0,
     eventsFlushInterval: 0,
@@ -53,7 +58,7 @@ export const atlasServerClient = new AtlasNextServerClient(
         return usage;
       },
     },
-  }
+  } as any
 );
 
 // Helper function to check if Atlas is properly configured
